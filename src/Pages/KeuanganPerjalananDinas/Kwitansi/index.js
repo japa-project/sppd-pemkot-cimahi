@@ -1,7 +1,7 @@
 import { Button, HaederContent, MainHeader, Table, TableContent, TextInput } from "Components"
 import { useState } from "react"
 
-export const Kegiatan = () => {
+export const Kwitansi = () => {
     const [contentType, setContentType] = useState('View');
     return (
         <main>
@@ -16,7 +16,7 @@ export const Kegiatan = () => {
                     }
                 >
                     <div>
-                        <h1 className="title">Kegiatan</h1>
+                        <h1 className="title">Keuangan - Kwintansi SPPD</h1>
                         {
                             contentType === 'Edit' ? null : (
                                 <Button onClick={() => setContentType('Edit')} className="gap-2 w-32" backgroundColor="bg-orange-500 mt-2">
@@ -38,22 +38,26 @@ export const Kegiatan = () => {
 
                 <Table
                     listLabel={[
-                        {id: 'keperluan', name: 'Keperluan'},
-                        {id: 'no_surat', name: 'No Surat'},
-                        {id: 'lokasi', name: 'Lokasi'},
-                        {id: 'tgl_berangkat', name: 'Tgl Berangkat'},
+                        {id: 'no_kwt', name: 'Keperluan'},
+                        {id: 'nip', name: 'No Surat'},
+                        {id: 'nama', name: 'Lokasi'},
+                        {id: 'no_spd', name: 'No.SPD'},
+                        {id: 'no_spt', name: 'No.SPT'},
                         {id: 'tgl_mulai', name: 'Tgl Mulai'},
                         {id: 'tgl_selesai', name: 'Tgl Selesai'},
+                        {id: 'kegiatan', name: 'Kegiatan'},
                         {id: 'aksi', name: 'Aksi'},
                     ]}
                 >
                     <tr>
+                        <TableContent>001-KWT-2023</TableContent>
+                        <TableContent>20029121</TableContent>
+                        <TableContent>Teti(Kadis Pertanian)</TableContent>
+                        <TableContent>001-SPD-2023</TableContent>
+                        <TableContent>05-Jan-2023</TableContent>
+                        <TableContent>05-Jan-2023</TableContent>
+                        <TableContent>05-Jan-2023</TableContent>
                         <TableContent>Rakor Anggaran</TableContent>
-                        <TableContent>005-UND-PROV</TableContent>
-                        <TableContent>Kantor Gubernur</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
                         <TableContent>Action</TableContent>
                     </tr>
                 </Table>

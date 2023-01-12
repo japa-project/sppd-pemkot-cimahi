@@ -1,7 +1,7 @@
 import { Button, HaederContent, MainHeader, Table, TableContent, TextInput } from "Components"
 import { useState } from "react"
 
-export const Kegiatan = () => {
+export const Sp2d = () => {
     const [contentType, setContentType] = useState('View');
     return (
         <main>
@@ -16,7 +16,7 @@ export const Kegiatan = () => {
                     }
                 >
                     <div>
-                        <h1 className="title">Kegiatan</h1>
+                        <h1 className="title">Keuangan - SP2D</h1>
                         {
                             contentType === 'Edit' ? null : (
                                 <Button onClick={() => setContentType('Edit')} className="gap-2 w-32" backgroundColor="bg-orange-500 mt-2">
@@ -38,22 +38,24 @@ export const Kegiatan = () => {
 
                 <Table
                     listLabel={[
-                        {id: 'keperluan', name: 'Keperluan'},
-                        {id: 'no_surat', name: 'No Surat'},
-                        {id: 'lokasi', name: 'Lokasi'},
-                        {id: 'tgl_berangkat', name: 'Tgl Berangkat'},
-                        {id: 'tgl_mulai', name: 'Tgl Mulai'},
-                        {id: 'tgl_selesai', name: 'Tgl Selesai'},
+                        {id: 'no_sp2d', name: 'No.SP2D'},
+                        {id: 'tgl_sp2d', name: 'Tgl SP2D'},
+                        {id: 'no_npd', name: 'No.NPD'},
+                        {id: 'uraian', name: 'Uraian'},
+                        {id: 'sub_kegiatan', name: 'Sub Kegiatan'},
+                        {id: 'kode_rek', name: 'Kode Rek'},
+                        {id: 'jumlah', name: 'Jumlah'},
                         {id: 'aksi', name: 'Aksi'},
                     ]}
                 >
                     <tr>
-                        <TableContent>Rakor Anggaran</TableContent>
-                        <TableContent>005-UND-PROV</TableContent>
-                        <TableContent>Kantor Gubernur</TableContent>
+                        <TableContent>001-SP2D-2023</TableContent>
+                        <TableContent>05-Jan-2023</TableContent>
+                        <TableContent>001-SP2D-2023</TableContent>
+                        <TableContent>Dibayar belanja Perjalanan Dinas Biasa </TableContent>
                         <TableContent>05-Jan-2023</TableContent>
                         <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
+                        <TableContent>430.000</TableContent>
                         <TableContent>Action</TableContent>
                     </tr>
                 </Table>
