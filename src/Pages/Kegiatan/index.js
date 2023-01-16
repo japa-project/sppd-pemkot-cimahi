@@ -1,5 +1,7 @@
-import { Button, HaederContent, MainHeader, Table, TableContent, TextInput } from "Components"
+import { Button, HaederContent, MainHeader, WrapperContent } from "Components"
 import { useState } from "react"
+import { FormInput } from "./FormInput";
+import { View } from "./View";
 
 export const Kegiatan = () => {
     const [contentType, setContentType] = useState('View');
@@ -31,33 +33,13 @@ export const Kegiatan = () => {
                 </HaederContent>
             </MainHeader>
 
-            <div className="wrapper-content">
-                <TextInput 
-                    placeholder="Cari Data"
-                />
-
-                <Table
-                    listLabel={[
-                        {id: 'keperluan', name: 'Keperluan'},
-                        {id: 'no_surat', name: 'No Surat'},
-                        {id: 'lokasi', name: 'Lokasi'},
-                        {id: 'tgl_berangkat', name: 'Tgl Berangkat'},
-                        {id: 'tgl_mulai', name: 'Tgl Mulai'},
-                        {id: 'tgl_selesai', name: 'Tgl Selesai'},
-                        {id: 'aksi', name: 'Aksi'},
-                    ]}
-                >
-                    <tr>
-                        <TableContent>Rakor Anggaran</TableContent>
-                        <TableContent>005-UND-PROV</TableContent>
-                        <TableContent>Kantor Gubernur</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>05-Jan-2023</TableContent>
-                        <TableContent>Action</TableContent>
-                    </tr>
-                </Table>
-            </div>
+            <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
+                {
+                    contentType === 'View' ? 
+                    <View /> : 
+                    <FormInput />
+                }
+            </WrapperContent>
         </main>
     )
 }

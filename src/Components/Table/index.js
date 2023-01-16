@@ -19,7 +19,7 @@ export const Table = ({
                         {
                             listLabel.map(value => {
                                 return (
-                                    <th key={value.id} scope="col" className="text-lg font-bold px-6 py-4 text-center">
+                                    <th key={value.id} scope="col" className="text-md font-bold px-6 py-4 text-center">
                                         {value.name}
                                     </th>
                                 )

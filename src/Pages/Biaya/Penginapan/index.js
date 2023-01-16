@@ -1,5 +1,7 @@
-import { Button, HaederContent, MainHeader, Table, TableContent, TextInput } from "Components"
+import { Button, HaederContent, MainHeader, Table, TableContent, TextInput, WrapperContent } from "Components"
 import { useState } from "react"
+import { FormInput } from "./FormInput";
+import { View } from "./View";
 
 export const Penginapan = () => {
     const [contentType, setContentType] = useState('View');
@@ -31,35 +33,13 @@ export const Penginapan = () => {
                 </HaederContent>
             </MainHeader>
 
-            <div className="wrapper-content">
-                <TextInput 
-                    placeholder="Cari Data"
-                />
-
-                <Table
-                    listLabel={[
-                        {id: 'provinsi', name: 'Provinsi'},
-                        {id: 'satuan', name: 'Satuan'},
-                        {id: 'Pejabat / Eselon I', name: 'Pejabat / Eselon I'},
-                        {id: 'Pejabat / Eselon II', name: 'Pejabat / Eselon II'},
-                        {id: 'Eselon III / Gol IV', name: 'Eselon III / Gol IV'},
-                        {id: 'Eselon IV / Gol III', name: 'Eselon IV / Gol III'},
-                        {id: 'Gol I / Gol II', name: 'Gol I / Gol II'},
-                        {id: 'aksi', name: 'Aksi'},
-                    ]}
-                >
-                    <tr>
-                        <TableContent>Jawa Barat</TableContent>
-                        <TableContent>OH</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>Action</TableContent>
-                    </tr>
-                </Table>
-            </div>
+            <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
+                {
+                    contentType === 'View' ? 
+                    <View /> : 
+                    <FormInput />
+                }
+            </WrapperContent>
         </main>
     )
 }

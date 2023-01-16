@@ -1,5 +1,7 @@
-import { Button, HaederContent, MainHeader, Table, TableContent, TextInput } from "Components"
+import { Button, HaederContent, MainHeader, Table, TableContent, TextInput, WrapperContent } from "Components"
 import { useState } from "react"
+import { FormInput } from "./FormInput";
+import { View } from "./View";
 
 export const SewaKendaraan = () => {
     const [contentType, setContentType] = useState('View');
@@ -31,31 +33,13 @@ export const SewaKendaraan = () => {
                 </HaederContent>
             </MainHeader>
 
-            <div className="wrapper-content">
-                <TextInput 
-                    placeholder="Cari Data"
-                />
-
-                <Table
-                    listLabel={[
-                        {id: 'provinsi', name: 'Provinsi'},
-                        {id: 'satuan', name: 'Satuan'},
-                        {id: 'roda_empat', name: 'Roda Empat'},
-                        {id: 'Roda 6 / Bus Sedang', name: 'Roda 6 / Bus Sedang'},
-                        {id: 'Roda6 / Bus Besar', name: 'Roda6 / Bus Besar'},
-                        {id: 'aksi', name: 'Aksi'},
-                    ]}
-                >
-                    <tr>
-                        <TableContent>Jawa Barat</TableContent>
-                        <TableContent>OH</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>250.000</TableContent>
-                        <TableContent>Action</TableContent>
-                    </tr>
-                </Table>
-            </div>
+            <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
+                {
+                    contentType === 'View' ? 
+                    <View /> : 
+                    <FormInput />
+                }
+            </WrapperContent>
         </main>
     )
 }
