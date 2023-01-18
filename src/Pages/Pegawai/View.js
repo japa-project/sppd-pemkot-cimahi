@@ -1,6 +1,10 @@
 import { Table, TableContent } from "Components"
+import { setContentType, setSelectedId } from "Configs/Redux/reducers"
+import { useDispatch, useSelector } from "react-redux"
+import { ActionData } from "utils"
 
-export const View = () => {
+export const View = ({data = []}) => {
+    const dispatch = useDispatch();
     return (
         <section>
             <Table
@@ -14,15 +18,38 @@ export const View = () => {
                     {id: 'aksi', name: 'Aksi'},
                 ]}
             >
-                <tr>
-                    <TableContent>Udin</TableContent>
-                    <TableContent>2121313</TableContent>
-                    <TableContent>Bintang</TableContent>
-                    <TableContent>Penata R</TableContent>
-                    <TableContent>IVV</TableContent>
-                    <TableContent>02829393</TableContent>
-                    <TableContent>Action</TableContent>
-                </tr>
+                {
+                    data.map((value, index) => {
+                        return (
+                            <tr key={index}>
+                                <TableContent>{value.nama}</TableContent>
+                                <TableContent>{value.nip}</TableContent>
+                                <TableContent>{value.jabatan}</TableContent>
+                                <TableContent>{value.pangkat}</TableContent>
+                                <TableContent>{value.pangkat}</TableContent>
+                                <TableContent>{value.phone}</TableContent>
+                                <TableContent>
+                                    {
+                                        ActionData.map(result => {
+                                            return result.isRender ? (
+                                                <button 
+                                                    className="mt-2" 
+                                                    key={result.id}
+                                                    onClick={() => {
+                                                        dispatch(setContentType(result.name))
+                                                        dispatch(setSelectedId(value.id))
+                                                    }}
+                                                >
+                                                    {result.icon}
+                                                </button>
+                                            ) : null
+                                        })
+                                    }
+                                </TableContent>
+                            </tr>
+                        )
+                    })
+                }
             </Table>
         </section>
     )

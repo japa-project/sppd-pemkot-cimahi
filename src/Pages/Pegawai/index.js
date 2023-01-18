@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
     Button, 
     HaederContent, 
@@ -7,9 +7,34 @@ import {
 } from "Components";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
+import { GetAllPegawai } from "Services/Pegawai";
 
 export const Pegawai = () => {
+    const [listData, setListData] = useState([]);
+    const [isAddData, setIsAddData] = useState(false);
+    const [page] = useState(1);
     const [contentType, setContentType] = useState('View');
+
+    useEffect(() => {
+        if (isAddData) {
+            fetchAllData(page);
+        }
+    }, [isAddData, page]);
+
+    useEffect(() => {
+        fetchAllData(page);
+    }, [page]);
+
+    const fetchAllData = async (value) => {
+        try {
+            const response = await GetAllPegawai({page: value, perpage: 10});
+            if (response.data.result) {
+                setListData(response.data.result);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <main>
             <MainHeader>
@@ -23,8 +48,10 @@ export const Pegawai = () => {
                     <div>
                         <h1 className="title">Pegawai</h1>
                         {
-                            contentType === 'Edit' ? null : (
-                                <Button onClick={() => setContentType('Edit')} className="gap-2" backgroundColor="bg-orange-500 mt-2">
+                            contentType === 'Add' ? null : (
+                                <Button onClick={() => {
+                                    setContentType('Add');
+                                }} className="gap-2" backgroundColor="bg-orange-500 mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                                     </svg>
@@ -39,8 +66,13 @@ export const Pegawai = () => {
             <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
                 {
                     contentType === 'View' ? 
-                    <View /> : 
-                    <FormInput />
+                    <View data={listData} /> : 
+                    <FormInput 
+                        onCallback={(value) => {
+                            setIsAddData(value.success)
+                            setContentType('View');
+                        }}
+                    />
                 }
             </WrapperContent>
         </main>

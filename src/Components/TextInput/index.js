@@ -40,7 +40,8 @@ export const TextInput = ({
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                />
+                autoComplete="on"
+            />
         </div>
     )
 }
