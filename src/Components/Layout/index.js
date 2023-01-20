@@ -1,10 +1,31 @@
-import { useRef } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { setListProvince } from "Configs/Redux/reducers";
+import { useEffect, useRef } from "react"
+import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { GetAllProvince } from "Services";
 import { Navbar } from "./Navbar";
 import { Sidebar } from "./Sidebar";
 
 export const Layout = () => {
     const mainRef = useRef();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        fetchProvince();
+    }, []);
+
+    const fetchProvince = async () => {
+        try {
+            const response = await GetAllProvince();
+            if (response.data.msg) {
+                dispatch(setListProvince(response.data.msg));
+            }
+        } catch (error) {
+            console.log(error);
+            dispatch(setListProvince([]));
+        }
+    }
     return (
         <>
             <Sidebar />

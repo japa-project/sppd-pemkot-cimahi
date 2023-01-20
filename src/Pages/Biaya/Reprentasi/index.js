@@ -1,10 +1,55 @@
 import { Button, HaederContent, MainHeader, WrapperContent } from "Components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { GetAllDataRepresentasi, GetRepresentasiById } from "Services";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
 
 export const Representasi = () => {
+    const state = useSelector(state => state.root);
+    const [listData, setListData] = useState([]);
     const [contentType, setContentType] = useState('View');
+    const [isAddData, setIsAddData] = useState(false);
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        if (state.contentType === 'Edit') {
+            fetchDataById(state.selectedId);
+            setContentType('Edit');
+        }
+    }, [state.contentType, state.selectedId]);
+
+    useEffect(() => {
+        if (isAddData) {
+            fetchAllData(1);
+        }
+    }, [isAddData]);
+
+    useEffect(() => {
+        fetchAllData(1);
+    }, []);
+
+    const fetchAllData = async (value) => {
+        try {
+            const response = await GetAllDataRepresentasi({page: value, perpage: 10});
+            if (response.data.result) {
+                setListData(response.data.result);
+            }
+        } catch (error) {
+            console.log(error);
+            setListData([]);
+        }
+    } 
+    const fetchDataById = async id => {
+        try {
+            const response = await GetRepresentasiById(id);
+            if (response.data) {
+                setData(response.data.msg);
+            }
+        } catch (error) {
+            
+        }
+    }
     return (
         <main>
             <MainHeader>
@@ -36,8 +81,17 @@ export const Representasi = () => {
             <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
                 {
                     contentType === 'View' ? 
-                    <View /> : 
-                    <FormInput />
+                    <View
+                        data={listData}
+                    /> : 
+                    <FormInput 
+                        item={data}
+                        contentType={state.contentType}
+                        onCallback={(value) => {
+                            setIsAddData(value.success)
+                            setContentType('View');
+                        }}
+                    />
                 }
             </WrapperContent>
         </main>

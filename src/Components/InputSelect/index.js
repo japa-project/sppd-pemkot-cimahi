@@ -3,7 +3,9 @@ export const InputSelect = ({
     label = "",
     children,
     id = "",
-    name = ""
+    name = "",
+    value = "",
+    onChange = () => {}
 }) => {
     return (
         <div>
@@ -14,9 +16,12 @@ export const InputSelect = ({
                 </label>
                 )
             }
-            <select id={id} className="mt-2 block px-2 py-2 w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" name={name}>
-                <option value="">
-                    Select an option
+            <select 
+                onChange={onChange}
+                id={id} 
+                className="mt-2 block px-2 py-2 w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" name={name}>
+                <option value={value}>
+                    {value === "" ? "Select an option" : value}
                 </option>
                 {children}
             </select>

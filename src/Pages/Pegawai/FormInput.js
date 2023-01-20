@@ -1,15 +1,20 @@
 import { Button, InputSelect, SectionForm, TextInput, WrapperForm } from "Components"
 import { Form, Formik } from "formik"
-import { useState } from "react"
-import { AddPegawai } from "Services/Pegawai"
+import { useEffect, useState } from "react"
+import { AddPegawai, EditPegawaiById } from "Services/Pegawai"
 import { EmployeSchema } from "./data/EmployeSchema"
 
 export const FormInput = ({
     onCallback = () => {},
     contentType = 'Add',
     item = null,
+    listData = {
+        jabatan: [],
+        golongan: [],
+        pangkat: []
+    }
 }) => {
-    const [data] = useState({
+    const [data, setData] = useState({
         nama: '',
         nip: '',
         jabatan: '',
@@ -19,6 +24,21 @@ export const FormInput = ({
         no_rek: '',
         nama_rek: ''
     });
+
+    useEffect(() => {
+        if (item !== null) {
+            setData({
+                nama: item.nama,
+                nip: item?.nip,
+                jabatan: item.jabatan,
+                pangkat: item?.pangkat,
+                phone: item?.phone,
+                nama_bank: item?.nama_bank,
+                no_rek: item?.no_rek,
+                nama_rek: item?.nama_rek
+            });
+        }
+    }, [item]);
 
     const addData = async (payload) => {
         try {
@@ -30,15 +50,28 @@ export const FormInput = ({
             console.log(error);
         }
     }
+
+    const editData = async (payload) => {
+        try {
+            const response = await EditPegawaiById(item?.id, payload);
+            if (response.data) {
+                onCallback({success: true});
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <WrapperForm
-            title="Tambah Data Biaya Harian SPPD"
+            title={`${contentType === 'Edit' ? 'Edit' : 'Tambah'} Data Biaya Harian SPPD`}
         >
 
             <Formik
-                initialValues={data}
+                initialValues={{...data}}
                 validationSchema={EmployeSchema}
-                onSubmit={(value) => addData(value)}
+                onSubmit={(value) => contentType === 'Edit' ? editData(value) : addData(value)}
+                enableReinitialize
             >
                 {({errors, touched, handleChange, handleSubmit, values}) => (
                     <Form>
@@ -74,20 +107,46 @@ export const FormInput = ({
                             column="3"
                             className="mt-8"
                         >
-                            <InputSelect 
+                            <InputSelect
+                                id="jabatan"
+                                name="jabatan"
                                 withLabel
                                 label="Jabatan"
-                            />
+                                onChange={handleChange}
+                                value={values.jabatan}
+                            >
+                                {
+                                    listData.jabatan.map(value => {
+                                        return <option key={value.id} value={value.nama}>{value.nama}</option>
+                                    })
+                                }
+                            </InputSelect>
 
                             <InputSelect 
+                                id="pangkat"
+                                name="pangkat"
                                 withLabel
                                 label="Pangkat"
-                            />
+                                onChange={handleChange}
+                                value={values.pangkat}
+                            >
+                                {
+                                    listData.pangkat.map(value => {
+                                        return <option key={value.id} value={value.nama}>{value.nama}</option>
+                                    })
+                                }
+                            </InputSelect>
 
                             <InputSelect 
                                 withLabel
                                 label="Gol"
-                            />
+                            >
+                                {
+                                    listData.golongan.map(value => {
+                                        return <option key={value.id} value={value.nama}>{value.nama}</option>
+                                    })
+                                }
+                            </InputSelect>
                         </SectionForm>
 
                         <div className="mt-8">

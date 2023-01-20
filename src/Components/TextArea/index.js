@@ -11,7 +11,7 @@ export const TextArea = ({
         <div>
             {
                 withLabel && (
-                    <label class="text-gray-700" for="name">
+                    <label className="text-gray-700">
                         {label}
                     </label>
                 )

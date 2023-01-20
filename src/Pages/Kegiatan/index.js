@@ -1,10 +1,85 @@
 import { Button, HaederContent, MainHeader, WrapperContent } from "Components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { GetAllBerkendara, GetAllCity } from "Services";
+import { GetAllKegiatan, GetKegiatanById } from "Services/Kegiatan";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
 
 export const Kegiatan = () => {
+    const state = useSelector(state => state.root);
     const [contentType, setContentType] = useState('View');
+    const [listData, setListData] = useState([]);
+    const [listCity, setListCity] = useState([]);
+    const [listKendaraan, setListKendaraan] = useState([]);
+    const [data, setData] = useState(null);
+    const [isAddData, setIsAddData] = useState(false);
+
+    useEffect(() => {
+        if (isAddData) {
+            fetchAllData(1);
+            setIsAddData(false);
+            setContentType('View')
+        }
+    }, [isAddData]);
+
+    useEffect(() => {
+        fetchAllData(1);
+        fetchCity();
+        fetchKendaraan();
+    }, []);
+
+    useEffect(() => {
+        if (state.contentType === 'Edit') {
+            fetchDataById(state.selectedId);
+            setContentType('Edit');
+        }
+    }, [state.contentType, state.selectedId]);
+
+    const fetchCity = async () => {
+        try {
+            const response = await GetAllCity();
+            if (response.data.msg) {
+                setListCity(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchKendaraan = async () => {
+        try {
+            const response = await GetAllBerkendara();
+            if (response.data.msg) {
+                setListKendaraan(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchDataById = async id => {
+        try {
+            const response = await GetKegiatanById(id);
+            if (response.data) {
+                setData(response.data.msg);
+            }
+        } catch (error) {
+            
+        }
+    }
+
+    const fetchAllData = async (value) => {
+        try {
+            const response = await GetAllKegiatan({page: value, perpage: 10});
+            if (response.data.result) {
+                setListData(response.data.result);
+            }
+        } catch (error) {
+            console.log(error);
+            setListData([]);
+        }
+    }
     return (
         <main>
             <MainHeader>
@@ -36,8 +111,20 @@ export const Kegiatan = () => {
             <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
                 {
                     contentType === 'View' ? 
-                    <View /> : 
-                    <FormInput />
+                    <View 
+                        data={listData}
+                    /> : 
+                    <FormInput 
+                        listCity={listCity}
+                        listKendaraan={listKendaraan}
+                        listProvince={state.listProvince}
+                        contentType={state.contentType}
+                        item={data}
+                        onCallback={(value) => {
+                            setIsAddData(value.success)
+                            setContentType('View');
+                        }}
+                    />
                 }
             </WrapperContent>
         </main>

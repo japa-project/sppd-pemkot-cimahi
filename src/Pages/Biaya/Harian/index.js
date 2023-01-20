@@ -1,10 +1,70 @@
 import { Button, HaederContent, MainHeader, WrapperContent } from "Components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { GetAllDataHarian, GetAllProvince, GetDataHarianById } from "Services";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
 
 export const Harian = () => {
+    const state = useSelector(state => state.root);
     const [contentType, setContentType] = useState('View');
+    const [listData, setListData] = useState([]);
+    const [listProvince, setListProvince] = useState([]);
+    const [data, setData] = useState(null);
+    const [isAddData, setIsAddData] = useState(false);
+
+    useEffect(() => {
+        if (isAddData) {
+            fetchAllData(1);
+        }
+    }, [isAddData]);
+
+    useEffect(() => {
+        fetchAllData(1);
+        fetchListProvince();
+    }, []);
+
+    useEffect(() => {
+        if (state.contentType === 'Edit') {
+            fetchDataById(state.selectedId);
+            setContentType('Edit');
+        }
+    }, [state.contentType, state.selectedId]);
+
+    const fetchListProvince = async () => {
+        try {
+            const response = await GetAllProvince();
+            if (response.data.msg) {
+                setListProvince(response.data.msg);
+            }
+        } catch (error) {
+            setListProvince([]);
+        }
+    }
+
+    const fetchDataById = async id => {
+        try {
+            const response = await GetDataHarianById(id);
+            if (response.data) {
+                setData(response.data.msg);
+            }
+        } catch (error) {
+            
+        }
+    }
+
+    const fetchAllData = async (value) => {
+        try {
+            const response = await GetAllDataHarian({page: value, perpage: 10});
+            if (response.data.result) {
+                setListData(response.data.result);
+            }
+        } catch (error) {
+            console.log(error);
+            setListData([]);
+        }
+    }
+
     return (
         <main>
             <MainHeader>
@@ -36,8 +96,18 @@ export const Harian = () => {
             <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
                 {
                     contentType === 'View' ? 
-                    <View /> : 
-                    <FormInput />
+                    <View 
+                        listData={listData} 
+                    /> : 
+                    <FormInput
+                        contentType={state.contentType}
+                        item={data}
+                        listProvince={listProvince}
+                        onCallback={(value) => {
+                            setIsAddData(value.success)
+                            setContentType('View');
+                        }}
+                    />
                 }
             </WrapperContent>
         </main>

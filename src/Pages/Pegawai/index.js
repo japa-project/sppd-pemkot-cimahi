@@ -7,10 +7,16 @@ import {
 } from "Components";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
-import { GetAllPegawai } from "Services/Pegawai";
+import { GetAllGolongan, GetAllJabatan, GetAllPangkat, GetAllPegawai, GetPegawaiById } from "Services/Pegawai";
+import { useSelector } from "react-redux";
 
 export const Pegawai = () => {
+    const state = useSelector(state => state.root);
     const [listData, setListData] = useState([]);
+    const [listJabatan, setListJabatan] = useState([]);
+    const [listPangkat, setListPangkat] = useState([]);
+    const [listGolongan, setListGolongan] = useState([]);
+    const [item, setItem] = useState(null);
     const [isAddData, setIsAddData] = useState(false);
     const [page] = useState(1);
     const [contentType, setContentType] = useState('View');
@@ -22,8 +28,18 @@ export const Pegawai = () => {
     }, [isAddData, page]);
 
     useEffect(() => {
-        fetchAllData(page);
-    }, [page]);
+        fetchAllData(1);
+        fetchJabatan();
+        fetchGolongan();
+        fetchPangkat();
+    }, []);
+
+    useEffect(() => {
+        if (state.contentType === 'Edit') {
+            fetchDataById(state.selectedId);
+            setContentType('Edit');
+        }
+    }, [state.contentType, state.selectedId]);
 
     const fetchAllData = async (value) => {
         try {
@@ -33,8 +49,57 @@ export const Pegawai = () => {
             }
         } catch (error) {
             console.log(error);
+            setListData([]);
+        }
+    };
+
+    const fetchDataById = async id => {
+        try {
+            const response = await GetPegawaiById(id);
+            if (response.data) {
+                setItem(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
+
+    const fetchJabatan = async () => {
+        try {
+            const response = await GetAllJabatan();
+            if (response.data.msg) {
+                setListJabatan(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
+            setListJabatan([]);
+        }
+    }
+
+    const fetchPangkat = async () => {
+        try {
+            const response = await GetAllPangkat();
+            if (response.data.msg) {
+                setListPangkat(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
+            setListPangkat([]);
+        }
+    }
+
+    const fetchGolongan = async () => {
+        try {
+            const response = await GetAllGolongan();
+            if (response.data.msg) {
+                setListGolongan(response.data.msg);
+            }
+        } catch (error) {
+            console.log(error);
+            setListJabatan([]);
+        }
+    }
+
     return (
         <main>
             <MainHeader>
@@ -68,6 +133,13 @@ export const Pegawai = () => {
                     contentType === 'View' ? 
                     <View data={listData} /> : 
                     <FormInput 
+                        contentType={contentType}
+                        item={item}
+                        listData={{
+                            jabatan: listJabatan,
+                            golongan: listGolongan,
+                            pangkat: listPangkat
+                        }}
                         onCallback={(value) => {
                             setIsAddData(value.success)
                             setContentType('View');

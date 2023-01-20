@@ -1,10 +1,58 @@
 import { Button, HaederContent, MainHeader, Table, TableContent, TextInput, WrapperContent } from "Components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { GetAllSewaKendaraan, GetSewaKendaraanById } from "Services";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
 
 export const SewaKendaraan = () => {
+    const state = useSelector(state => state.root);
     const [contentType, setContentType] = useState('View');
+    const [listData, setListData] = useState([]);
+    const [data, setData] = useState(null);
+    const [isAddData, setIsAddData] = useState(false);
+
+    useEffect(() => {
+        if (isAddData) {
+            fetchAllData(1);
+            setIsAddData(false);
+            setContentType('View')
+        }
+    }, [isAddData]);
+
+    useEffect(() => {
+        fetchAllData(1);
+    }, []);
+
+    useEffect(() => {
+        if (state.contentType === 'Edit') {
+            fetchDataById(state.selectedId);
+            setContentType('Edit');
+        }
+    }, [state.contentType, state.selectedId]);
+
+    const fetchDataById = async id => {
+        try {
+            const response = await GetSewaKendaraanById(id);
+            if (response.data) {
+                setData(response.data.msg);
+            }
+        } catch (error) {
+            
+        }
+    }
+
+    const fetchAllData = async (value) => {
+        try {
+            const response = await GetAllSewaKendaraan({page: value, perpage: 10});
+            if (response.data.result) {
+                setListData(response.data.result);
+            }
+        } catch (error) {
+            console.log(error);
+            setListData([]);
+        }
+    }
     return (
         <main>
             <MainHeader>
@@ -36,8 +84,18 @@ export const SewaKendaraan = () => {
             <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
                 {
                     contentType === 'View' ? 
-                    <View /> : 
-                    <FormInput />
+                    <View 
+                        data={listData}
+                    /> : 
+                    <FormInput
+                        item={data}
+                        listProvince={state.listProvince}
+                        contentType={state.contentType}
+                        onCallback={(value) => {
+                            setIsAddData(value.success)
+                            setContentType('View');
+                        }}
+                    />
                 }
             </WrapperContent>
         </main>

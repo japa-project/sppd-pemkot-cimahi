@@ -37,4 +37,21 @@ export const ActionData = [
         ),
         isRender: true
     },
-]
+];
+
+export const formatterCurrency = new Intl.NumberFormat("id-ID", {
+    style: 'currency',
+    currency: 'IDR'
+});
+
+const currentYear = (new Date()).getFullYear();
+const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+export const GetListYear = (subId) => {
+    return [...range(currentYear, currentYear - 50, -1).map(value => {
+        return {
+            id: value,
+            name: value,
+            subId: subId
+        }
+    })];
+}

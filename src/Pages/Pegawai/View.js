@@ -1,6 +1,6 @@
 import { Table, TableContent } from "Components"
 import { setContentType, setSelectedId } from "Configs/Redux/reducers"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { ActionData } from "utils"
 
 export const View = ({data = []}) => {
