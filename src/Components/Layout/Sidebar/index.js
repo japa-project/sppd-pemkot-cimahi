@@ -55,7 +55,7 @@ export const Sidebar = () => {
                                 }
                             </div>
                         ) : (
-                            <Link to={value.link} key={value.id} className="py-2 px-4 hover:bg-slate-200 cursor-pointer flex items-center gap-2">
+                            <Link to={value.link} onClick={() => dispatch(setContentType('View'))}  key={value.id} className="py-2 px-4 hover:bg-slate-200 cursor-pointer flex items-center gap-2">
                                 <div className="w-[26px] h-[26px] rounded-full bg-orange-500 flex justify-center items-center text-white">
                                     {value.icon}
                                 </div>
