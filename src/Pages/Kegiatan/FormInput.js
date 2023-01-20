@@ -1,9 +1,9 @@
 import { Button, InputSelect, SectionForm, TextArea, TextInput, WrapperForm } from "Components"
 import { Form, Formik } from "formik";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
+import { toast } from "react-toastify";
 import { AddKegiatan, EditKegiatan } from "Services/Kegiatan";
 import { GetListYear } from "utils";
 import { KegiatanSchema } from "./data/KegiatanSchema";
@@ -54,6 +54,7 @@ export const FormInput = ({
             const response = await AddKegiatan(payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil tambah data");
             }
         } catch (error) {
             console.log(error)
@@ -65,6 +66,7 @@ export const FormInput = ({
             const response = await EditKegiatan(item?.id, payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil edit data");
             } 
         } catch (error) {
             console.log(error);
@@ -73,7 +75,7 @@ export const FormInput = ({
 
     return (
         <WrapperForm
-            title="Tambah Data Kegiatan"
+            title={`${contentType === 'Edit' ? 'Edit' : 'Tambah'} Data Kegiatan`}
         >
 
             <Formik

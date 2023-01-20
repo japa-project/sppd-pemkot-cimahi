@@ -7,3 +7,4 @@ export const GetAllPangkat = () => Axios.get('/pangkat');
 export const GetAllGolongan = () => Axios.get('/golongan');
 export const GetPegawaiById = (id) => Axios.get(`/pegawai/${id}`);
 export const EditPegawaiById = (id, payload) => Axios.put(`/pegawai/${id}`, payload);
+export const DeletePegawai = (id) => Axios.delete(`/pegawai/${id}`);

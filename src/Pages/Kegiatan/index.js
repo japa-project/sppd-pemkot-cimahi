@@ -1,14 +1,17 @@
 import { Button, HaederContent, MainHeader, WrapperContent } from "Components"
+import { ModalDelete } from "Components/ModalDelete";
+import { setContentType } from "Configs/Redux/reducers";
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { GetAllBerkendara, GetAllCity } from "Services";
-import { GetAllKegiatan, GetKegiatanById } from "Services/Kegiatan";
+import { DeleteKegiatan, GetAllKegiatan, GetKegiatanById } from "Services/Kegiatan";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
 
 export const Kegiatan = () => {
     const state = useSelector(state => state.root);
-    const [contentType, setContentType] = useState('View');
+    const dispatch = useDispatch();
     const [listData, setListData] = useState([]);
     const [listCity, setListCity] = useState([]);
     const [listKendaraan, setListKendaraan] = useState([]);
@@ -19,9 +22,9 @@ export const Kegiatan = () => {
         if (isAddData) {
             fetchAllData(1);
             setIsAddData(false);
-            setContentType('View')
+            dispatch(setContentType('View'));
         }
-    }, [isAddData]);
+    }, [dispatch,isAddData]);
 
     useEffect(() => {
         fetchAllData(1);
@@ -32,9 +35,9 @@ export const Kegiatan = () => {
     useEffect(() => {
         if (state.contentType === 'Edit') {
             fetchDataById(state.selectedId);
-            setContentType('Edit');
+            dispatch(setContentType('Edit'));
         }
-    }, [state.contentType, state.selectedId]);
+    }, [dispatch,state.contentType, state.selectedId]);
 
     const fetchCity = async () => {
         try {
@@ -80,6 +83,19 @@ export const Kegiatan = () => {
             setListData([]);
         }
     }
+
+    const deleteData = async () => {
+        try {
+            const response = await DeleteKegiatan(state.selectedId);
+            if (response.data) {
+                fetchAllData(1);
+                dispatch(setContentType('View'));
+                toast.success("Berhasil hapus data");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <main>
             <MainHeader>
@@ -95,7 +111,7 @@ export const Kegiatan = () => {
                     <div>
                         <h1 className="title">Kegiatan</h1>
                         {
-                            contentType === 'Edit' ? null : (
+                            state.contentType === 'Edit' ? null : (
                                 <Button onClick={() => setContentType('Edit')} className="gap-2 w-32" backgroundColor="bg-orange-500 mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -108,9 +124,9 @@ export const Kegiatan = () => {
                 </HaederContent>
             </MainHeader>
 
-            <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
+            <WrapperContent>
                 {
-                    contentType === 'View' ? 
+                    state.contentType === 'View' || state.contentType === 'Delete' ? 
                     <View 
                         data={listData}
                     /> : 
@@ -127,6 +143,12 @@ export const Kegiatan = () => {
                     />
                 }
             </WrapperContent>
+
+            <ModalDelete
+                isOpen={state.contentType === 'Delete' ? true : false}
+                onDeleteData={() => deleteData()}
+                closeModal={() => dispatch(setContentType('View'))}
+            />
         </main>
     )
 }

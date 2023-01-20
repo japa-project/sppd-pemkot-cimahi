@@ -1,6 +1,7 @@
 import { Button, InputSelect, SectionForm, TextInput, WrapperForm } from "Components"
 import { Form, Formik } from "formik"
 import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 import { AddDataPenginapan, EditDataPenginapan } from "Services"
 import { PenginapanSchema } from "./data/PenginapanSchema"
 
@@ -40,6 +41,7 @@ export const FormInput = ({
             const response = await AddDataPenginapan(payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil tambah data");
             }
         } catch (error) {
             console.log(error);
@@ -51,6 +53,7 @@ export const FormInput = ({
             const response = await EditDataPenginapan(item?.id, payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil edit data");
             }
         } catch (error) {
             console.log(error);

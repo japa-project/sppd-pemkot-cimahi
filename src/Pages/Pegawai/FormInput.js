@@ -1,6 +1,7 @@
 import { Button, InputSelect, SectionForm, TextInput, WrapperForm } from "Components"
 import { Form, Formik } from "formik"
 import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 import { AddPegawai, EditPegawaiById } from "Services/Pegawai"
 import { EmployeSchema } from "./data/EmployeSchema"
 
@@ -45,6 +46,7 @@ export const FormInput = ({
             const response = await AddPegawai(payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil Tambah Data");
             }
         } catch (error) {
             console.log(error);
@@ -56,6 +58,7 @@ export const FormInput = ({
             const response = await EditPegawaiById(item?.id, payload);
             if (response.data) {
                 onCallback({success: true});
+                toast.success("Berhasil Edit Data");
             }
         } catch (error) {
             console.log(error);

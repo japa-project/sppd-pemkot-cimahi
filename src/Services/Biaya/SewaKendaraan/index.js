@@ -4,3 +4,4 @@ export const GetAllSewaKendaraan = ({page = 1, perpage = 10}) => Axios.get(`/bsk
 export const GetSewaKendaraanById = id => Axios.get(`/bskendaraan/${id}`);
 export const AddSewaKendaraan = payload => Axios.post('/bskendaraan', payload);
 export const EditSewaKendaraan = (id, payload) => Axios.put(`/bskendaraan/${id}`, payload);
+export const DeleteDataSewaKendaraan = id => Axios.delete(`/bskendaraan/${id}`);

@@ -7,11 +7,15 @@ import {
 } from "Components";
 import { FormInput } from "./FormInput";
 import { View } from "./View";
-import { GetAllGolongan, GetAllJabatan, GetAllPangkat, GetAllPegawai, GetPegawaiById } from "Services/Pegawai";
-import { useSelector } from "react-redux";
+import { DeletePegawai, GetAllGolongan, GetAllJabatan, GetAllPangkat, GetAllPegawai, GetPegawaiById } from "Services/Pegawai";
+import { useDispatch, useSelector } from "react-redux";
+import { setContentType } from "Configs/Redux/reducers";
+import { ModalDelete } from "Components/ModalDelete";
+import { toast } from "react-toastify";
 
 export const Pegawai = () => {
     const state = useSelector(state => state.root);
+    const dispatch = useDispatch();
     const [listData, setListData] = useState([]);
     const [listJabatan, setListJabatan] = useState([]);
     const [listPangkat, setListPangkat] = useState([]);
@@ -19,7 +23,6 @@ export const Pegawai = () => {
     const [item, setItem] = useState(null);
     const [isAddData, setIsAddData] = useState(false);
     const [page] = useState(1);
-    const [contentType, setContentType] = useState('View');
 
     useEffect(() => {
         if (isAddData) {
@@ -37,9 +40,9 @@ export const Pegawai = () => {
     useEffect(() => {
         if (state.contentType === 'Edit') {
             fetchDataById(state.selectedId);
-            setContentType('Edit');
+            dispatch(setContentType('Edit'));
         }
-    }, [state.contentType, state.selectedId]);
+    }, [dispatch, state.contentType, state.selectedId]);
 
     const fetchAllData = async (value) => {
         try {
@@ -100,6 +103,19 @@ export const Pegawai = () => {
         }
     }
 
+    const deletePegawai = async () => {
+        try {
+            const response = await DeletePegawai(state.selectedId);
+            if (response.data) {
+                fetchAllData(1);
+                dispatch(setContentType('View'));
+                toast.success("Berhasil hapus data");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <main>
             <MainHeader>
@@ -113,9 +129,9 @@ export const Pegawai = () => {
                     <div>
                         <h1 className="title">Pegawai</h1>
                         {
-                            contentType === 'Add' ? null : (
+                            state.contentType === 'Add' ? null : (
                                 <Button onClick={() => {
-                                    setContentType('Add');
+                                    dispatch(setContentType('Add'));
                                 }} className="gap-2" backgroundColor="bg-orange-500 mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -128,12 +144,12 @@ export const Pegawai = () => {
                 </HaederContent>
             </MainHeader>
 
-            <WrapperContent withSearchInput={contentType === 'View' ? true : false}>
+            <WrapperContent withSearchInput={state.contentType === 'View' ? true : false}>
                 {
-                    contentType === 'View' ? 
-                    <View data={listData} /> : 
+                    state.contentType === 'View' || state.contentType === 'Delete' ? 
+                    <View data={listData} /> : state.contentType !== 'Delete' ?
                     <FormInput 
-                        contentType={contentType}
+                        contentType={state.contentType}
                         item={item}
                         listData={{
                             jabatan: listJabatan,
@@ -142,11 +158,16 @@ export const Pegawai = () => {
                         }}
                         onCallback={(value) => {
                             setIsAddData(value.success)
-                            setContentType('View');
+                            dispatch(setContentType('View'));
                         }}
-                    />
+                    /> : null
                 }
             </WrapperContent>
+            <ModalDelete
+                isOpen={state.contentType === 'Delete' ? true : false}
+                onDeleteData={() => deletePegawai()}
+                closeModal={() => dispatch(setContentType('View'))}
+            />
         </main>
     )
 }

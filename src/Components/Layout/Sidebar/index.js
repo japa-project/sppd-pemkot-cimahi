@@ -1,9 +1,12 @@
 import { Hero } from "Components/Hero";
+import { setContentType } from "Configs/Redux/reducers";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { ListNav } from "./data";
 
 export const Sidebar = () => {
+    const dispatch = useDispatch();
     const [selectedKeySubmenu, setSelectedKeySubmenu] = useState(null);
     return (
         <aside className="lg:block md:block hidden overflow-auto w-full md:w-64 lg:w-64 h-full bg-gradient-to-t from-[#68902dd9] to-white fixed transition-all duration-500 ease-in-out">
@@ -44,7 +47,7 @@ export const Sidebar = () => {
                                 {
                                     selectedKeySubmenu === index && value.subMenu.map((result) => {
                                         return (
-                                            <Link key={result.path} to={result.path} className="pl-8 py-2 px-4 hover:bg-slate-200 cursor-pointer flex items-center gap-2">
+                                            <Link key={result.path} onClick={() => dispatch(setContentType('View'))} to={result.path} className="pl-8 py-2 px-4 hover:bg-slate-200 cursor-pointer flex items-center gap-2">
                                                 <span className="text-sm font-bold ml-4">{result.title}</span>
                                             </Link>
                                         )

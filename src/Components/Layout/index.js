@@ -6,6 +6,8 @@ import { Outlet } from "react-router-dom";
 import { GetAllProvince } from "Services";
 import { Navbar } from "./Navbar";
 import { Sidebar } from "./Sidebar";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Layout = () => {
     const mainRef = useRef();
@@ -37,6 +39,13 @@ export const Layout = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                autoClose={5000} 
+                collapseDuration={300}
+                draggable={false}
+                hideProgressBar={true}
+                theme={'colored'}  
+            />
         </>
     )
 }
